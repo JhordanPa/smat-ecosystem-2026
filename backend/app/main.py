@@ -1,16 +1,18 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from .database import engine
 from . import models, schemas, auth, database
 
-models.Base.metadata.create_all(bind=database.engine)
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title="SMAT API - Unidad I")
 
 # CONFIGURACIÓN CRÍTICA PARA SEMANA 5 (CONEXIÓN MÓVIL)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    #Cambio hecho para entrar al Swagger libremente
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

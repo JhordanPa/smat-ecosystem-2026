@@ -4,6 +4,7 @@ import '../services/auth_service.dart';
 import '../models/estacion.dart';
 import 'login_screen.dart';
 import 'add_estacion.dart';
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,20 +16,28 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // Variable para guardar la lista de estaciones
   late Future<List<Estacion>> _futureEstaciones;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _cargarEstaciones();
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer t) {
+    _cargarEstaciones();
+    });
   }
-
-  
 
   // Función que llama al ApiService para descargar los datos
   void _cargarEstaciones() {
     setState(() {
       _futureEstaciones = ApiService().fetchEstaciones();
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Apaga el reloj
+  super.dispose();
   }
 
   void _mostrarDialogoEdicion(Estacion estacion) {
@@ -117,7 +126,7 @@ class _HomePageState extends State<HomePage> {
 
                 Color colorDelSensor = Colors.blue;
                 if (estacion.ultimoValor != null) {
-                  if (estacion.ultimoValor! > 50) {
+                  if (estacion.ultimoValor! > 70) {
                     colorDelSensor = Colors.red;
                   } else {
                     colorDelSensor = Colors.green;
@@ -152,6 +161,16 @@ class _HomePageState extends State<HomePage> {
                     leading: Icon(Icons.sensors, color: colorDelSensor),
                     title: Text(estacion.nombre),
                     subtitle: Text(estacion.ubicacion),
+                    trailing: estacion.ultimoValor != null
+                        ? Text(
+                            "${estacion.ultimoValor!.toStringAsFixed(1)} cm",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: colorDelSensor, // Mantiene el color del reto
+                            ),
+                          )
+                        : const Text("Sin datos"),
                     onTap: () => _mostrarDialogoEdicion(estacion), // Siguiente paso
                   ),
                 );

@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 class AuthService {
-  final String baseUrl = "http://127.0.0.1:8000";
+
+  //El url puede ser editado a localhost. Solo fue cambiado por temas de conexión.
+  final String baseUrl = "https://tying-backtrack-subprime.ngrok-free.dev";
   Future<bool> login(String username, String password) async {
     // Nota: El endpoint /token suele esperar un form-data, pero por simplicidad
     // en este lab usaremos un POST simple según el backend construido.

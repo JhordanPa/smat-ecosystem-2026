@@ -19,3 +19,5 @@ mobile/.pub/
 mobile/build/
 mobile/android/local.properties
 mobile/ios/Flutter/Generated.xcconfig
+# --- IOT ---
+iot_device/venv

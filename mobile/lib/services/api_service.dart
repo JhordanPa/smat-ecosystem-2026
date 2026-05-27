@@ -5,13 +5,18 @@ import 'auth_service.dart';
 
 class ApiService {
   // 10.0.2.2 es el alias del localhost de la PC para emuladores Android
-  final String baseUrl = "http://127.0.0.1:8000";
+  // Coloco una url personalizad por temas de conexión a localhost. Puede ser editado.
+  final String baseUrl = "https://tying-backtrack-subprime.ngrok-free.dev";
 
-  
   Future<List<Estacion>> fetchEstaciones() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/estaciones/'))
-      .timeout(const Duration(seconds: 5)); // Evita esperas infinitas
+      final response = await http.get(
+        Uri.parse('$baseUrl/estaciones/'),
+        headers: {
+          'ngrok-skip-browser-warning': 'true' // Habilita la entrada a mi url, puede ser borrado todo headers para usar la URL en modo hostlocal
+        }
+      ).timeout(const Duration(seconds: 5)); 
+      
       if (response.statusCode == 200) {
         List jsonResponse = json.decode(response.body);
         return jsonResponse.map((data) => Estacion.fromJson(data)).toList();
@@ -19,7 +24,6 @@ class ApiService {
         throw Exception('Error del servidor: ${response.statusCode}');
       }
     } catch (e) {
-    // Esto evita que la App se cierre inesperadamente
       throw Exception('No se pudo conectar con SMAT. ¿Está el servidor activo?');
     }
   }
